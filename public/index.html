@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M-Pesa Payment</title>
+  </head>
+  <body>
+    <h2>M-Pesa Payment Form</h2>
+    <form id="paymentForm">
+      <label>Phone:</label>
+      <input type="text" name="phone" required placeholder="07XXXXXXXX" /><br />
+      <label>Amount:</label>
+      <input type="number" name="amount" required min="1" /><br />
+      <button type="submit">Pay</button>
+    </form>
+    <div id="status" style="margin-top: 10px; font-weight: bold"></div>
+
+    <script>
+      const form = document.getElementById("paymentForm");
+      const statusDiv = document.getElementById("status");
+
+      function validatePhone(phone) {
+        return /^07\d{8}$/.test(phone) || /^2547\d{8}$/.test(phone);
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusDiv.textContent = "";
+        const phone = form.phone.value.trim();
+        const amount = Number(form.amount.value);
+
+        if (!validatePhone(phone)) {
+          statusDiv.textContent = "Invalid Kenyan phone number.";
+          statusDiv.style.color = "red";
+          return;
+        }
+        if (!amount || amount <= 0) {
+          statusDiv.textContent = "Please enter a valid amount.";
+          statusDiv.style.color = "red";
+          return;
+        }
+
+        statusDiv.textContent = "Sending payment request...";
+        statusDiv.style.color = "black";
+
+        try {
+          const res = await fetch("/api/stkpush", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone, amount }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            statusDiv.textContent =
+              "✅ Payment prompt sent. Waiting for confirmation...";
+            statusDiv.style.color = "green";
+
+            const interval = setInterval(async () => {
+              const res = await fetch("/payment-status");
+
+              const status = await res.json();
+              if (status.received) {
+                statusDiv.textContent = "✅ Payment received successfully!";
+                statusDiv.style.color = "green";
+                clearInterval(interval);
+              }
+            }, 3000);
+          } else {
+            statusDiv.textContent = `❌ Error: ${
+              data.message || "Unknown error"
+            }`;
+            statusDiv.style.color = "red";
+          }
+        } catch (err) {
+          statusDiv.textContent = "❌ Network error. Try again.";
+          statusDiv.style.color = "red";
+        }
+      });
+    </script>
+  </body>
+</html>
