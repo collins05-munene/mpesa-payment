@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M-Pesa Payment</title>
+    <style>
+      /* Reset & base styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #e0f7fa, #ffffff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      /* Container styling */
+      .payment-section {
+        width: 100%;
+        max-width: 500px;
+        background: #ffffff;
+        padding: 40px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      /* Header */
+      .payment-section h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        color: #00796b;
+      }
+
+      /* Form fields */
+      form {
+        text-align: left;
+      }
+
+      form label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      form input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      form input:focus {
+        border-color: #009688;
+        outline: none;
+      }
+
+      /* Submit button */
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: #009688;
+        border: none;
+        color: #fff;
+        font-size: 17px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #00796b;
+      }
+
+      /* Status message */
+      #status {
+        margin-top: 20px;
+        font-weight: bold;
+        text-align: center;
+        color: #555;
+      }
+
+      /* Responsive tweaks */
+      @media (max-width: 480px) {
+        .payment-section {
+          padding: 30px 20px;
+        }
+
+        button[type="submit"] {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="payment-section">
+      <h2>M-Pesa Payment Form</h2>
+      <form id="paymentForm">
+        <label>Phone:</label>
+        <input
+          type="text"
+          name="phone"
+          required
+          placeholder="07XXXXXXXX"
+        /><br />
+        <label>Amount:</label>
+        <input type="number" name="amount" required min="1" /><br />
+        <button type="submit">Pay</button>
+      </form>
+      <div id="status" style="margin-top: 10px; font-weight: bold"></div>
+    </section>
+    <script>
+      const form = document.getElementById("paymentForm");
+      const statusDiv = document.getElementById("status");
+
+      function validatePhone(phone) {
+        return /^07\d{8}$/.test(phone) || /^2547\d{8}$/.test(phone);
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusDiv.textContent = "";
+        const phone = form.phone.value.trim();
+        const amount = Number(form.amount.value);
+
+        if (!validatePhone(phone)) {
+          statusDiv.textContent = "Invalid Kenyan phone number.";
+          statusDiv.style.color = "red";
+          return;
+        }
+        if (!amount || amount <= 0) {
+          statusDiv.textContent = "Please enter a valid amount.";
+          statusDiv.style.color = "red";
+          return;
+        }
+
+        statusDiv.textContent = "Sending payment request...";
+        statusDiv.style.color = "black";
+
+        try {
+          const res = await fetch("http://localhost:5500/api/stkpush", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone, amount }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            statusDiv.textContent =
+              "✅ Payment prompt sent. Waiting for confirmation...";
+            statusDiv.style.color = "green";
+
+            const interval = setInterval(async () => {
+              const res = await fetch("http://localhost:5500/payment-status");
+              const status = await res.json();
+              if (status.received) {
+                statusDiv.textContent = "✅ Payment received successfully!";
+                statusDiv.style.color = "green";
+                clearInterval(interval);
+              }
+            }, 3000);
+          } else {
+            statusDiv.textContent = `❌ Error: ${
+              data.message || "Unknown error"
+            }`;
+            statusDiv.style.color = "red";
+          }
+        } catch (err) {
+          statusDiv.textContent = "❌ Network error. Try again.";
+          statusDiv.style.color = "red";
+        }
+      });
+    </script>
+  </body>
+</html>
