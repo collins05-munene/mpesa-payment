@@ -101,6 +101,9 @@ app.post('/api/callback', (req, res) => {
 app.get('/payment-status', (req, res) => {
   res.json({ received: paymentReceived });
 });
+app.get("/", (req, res) => {
+  res.send("✅ M-Pesa Payment API is running.");
+});
 
 const PORT = process.env.PORT || 5500;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
