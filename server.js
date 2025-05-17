@@ -8,11 +8,13 @@ app.use(express.json());
 app.use(cors());
 
 // Load environment variables
-const consumerKey = process.env.MPESA_CONSUMER_KEY;
-const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
-const shortcode = process.env.MPESA_SHORTCODE; // e.g., 174379
-const passkey = process.env.MPESA_PASSKEY; // Sandbox passkey
-const callbackURL = process.env.MPESA_CALLBACK_URL;
+const shortcode = '174379'; 
+const consumerKey = '3kPrqyYQykRoyoInl3P3tKU9DbL2RZHn3rvfJEud1iG9OqDi'; 
+const consumerSecret = 'KJKOXneT9hiMKK4rr46P44PVhbmRZLRVnUL5cv95aEOl2NTviArqmbPbrW4NkFx3'; 
+
+const passkey = 'bfb279f9aa9bdbcf15e97dd71a467cd2c2c7a1b1b204d17843c4fdd36f79c6e0'; 
+const callbackURL = 'https://mpesa-stk-app.onrender.com/api/callback';
+
 
 let cachedToken = null;
 let tokenExpiry = null;
