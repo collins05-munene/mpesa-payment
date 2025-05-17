@@ -4,18 +4,148 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>M-Pesa Payment</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #e6f0ea, #fdfdfd);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 1rem;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 2rem;
+        max-width: 420px;
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        color: #1b5e20;
+        margin-bottom: 1.2rem;
+        font-size: 1.6rem;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        text-align: left;
+      }
+
+      label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.25rem;
+      }
+
+      input {
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        transition: border 0.3s ease;
+      }
+
+      input:focus {
+        border-color: #1b5e20;
+        outline: none;
+      }
+
+      button {
+        background-color: #1b5e20;
+        color: #fff;
+        padding: 0.75rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #2e7d32;
+      }
+
+      #status {
+        margin-top: 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #555;
+        text-align: center;
+      }
+
+      footer {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+        color: #999;
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 1.5rem;
+        }
+
+        h2 {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h2>M-Pesa Payment Form</h2>
-    <form id="paymentForm">
-      <label>Phone:</label>
-      <input type="text" name="phone" required placeholder="07XXXXXXXX" /><br />
-      <label>Amount:</label>
-      <input type="number" name="amount" required min="1" /><br />
-      <button type="submit">Pay</button>
-    </form>
-    <div id="status" style="margin-top: 10px; font-weight: bold"></div>
+    <div class="container">
+      <h2>M-Pesa Payment</h2>
+      <form id="paymentForm">
+        <div>
+          <label for="phone">Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            id="phone"
+            required
+            placeholder="07XXXXXXXX"
+          />
+        </div>
+        <div>
+          <label for="amount">Amount</label>
+          <input
+            type="number"
+            name="amount"
+            id="amount"
+            required
+            min="1"
+            placeholder="Enter amount"
+          />
+        </div>
+        <button type="submit">Pay Now</button>
+      </form>
+      <div id="status"></div>
 
+      <footer>Powered by SecurePay | M-Pesa Integration</footer>
+    </div>
     <script>
       const form = document.getElementById("paymentForm");
       const statusDiv = document.getElementById("status");
