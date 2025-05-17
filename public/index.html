@@ -45,11 +45,14 @@
         statusDiv.style.color = "black";
 
         try {
-          const res = await fetch("/api/stkpush", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone, amount }),
-          });
+          const res = await fetch(
+            "https://mpesa-payment-app.onrender.com/api/stkpush",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ phone, amount }),
+            }
+          );
 
           const data = await res.json();
           if (res.ok) {
