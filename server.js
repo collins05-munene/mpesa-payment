@@ -11,7 +11,7 @@ const shortcode = '174379';
 const passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 const consumerKey = '3kPrqyYQykRoyoInl3P3tKU9DbL2RZHn3rvfJEud1iG9OqDi';
 const consumerSecret = 'KJKOXneT9hiMKK4rr46P44PVhbmRZLRVnUL5cv95aEOl2NTviArqmbPbrW4NkFx3';
-const callbackURL = 'https://69a1-154-159-252-153.ngrok-free.app/api/callback'; // Update to your correct URL
+const callbackURL = 'https://mpesa-payment-app.onrender.com/api/callback'; // Update to your correct URL
 
 let cachedToken = null;
 let tokenExpiry = null;
