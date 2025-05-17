@@ -152,11 +152,14 @@
         statusDiv.style.color = "black";
 
         try {
-          const res = await fetch("http://localhost:5500/api/stkpush", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone, amount }),
-          });
+          const res = await fetch(
+            "https://mpesa-stk-app.onrender.com/api/stkpush",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ phone, amount }),
+            }
+          );
 
           const data = await res.json();
           if (res.ok) {
@@ -165,7 +168,9 @@
             statusDiv.style.color = "green";
 
             const interval = setInterval(async () => {
-              const res = await fetch("http://localhost:5500/payment-status");
+              const res = await fetch(
+                "https://mpesa-stk-app.onrender.com/payment-status"
+              );
               const status = await res.json();
               if (status.received) {
                 statusDiv.textContent = "✅ Payment received successfully!";

@@ -11,7 +11,7 @@ app.use(cors());
 const consumerKey = process.env.MPESA_CONSUMER_KEY;
 const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
 const shortcode = process.env.MPESA_SHORTCODE; // e.g., 174379
-const lipaNaMpesaPasskey = process.env.MPESA_PASSKEY; // Sandbox passkey
+const passkey = process.env.MPESA_PASSKEY; // Sandbox passkey
 const callbackURL = process.env.MPESA_CALLBACK_URL;
 
 let cachedToken = null;
